@@ -241,13 +241,10 @@ func (m *averagedPerceptron) predict(features map[string]float64) string {
 			continue
 		}
 		for label, weight := range weights {
-			if _, ok := scores[label]; ok {
-				scores[label] += value * weight
-			} else {
-				scores[label] = value * weight
-			}
+			scores[label] += value * weight
 		}
 	}
+
 	return max(scores)
 }
 
