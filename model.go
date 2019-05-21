@@ -62,6 +62,11 @@ func ModelFromDisk(path string) *Model {
 		tagger:    newPerceptronTagger()}
 }
 
+// DefaultModel creates a new default Model
+func DefaultModel(tagging, classifying bool) *Model {
+	return defaultModel(tagging, classifying)
+}
+
 // Write saves a Model to the user-provided location.
 func (m *Model) Write(path string) error {
 	err := os.MkdirAll(path, os.ModePerm)
