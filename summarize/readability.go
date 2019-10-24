@@ -2,8 +2,6 @@ package summarize
 
 import (
 	"math"
-
-	"github.com/jdkato/prose/internal/util"
 )
 
 // FleschKincaid computes the Flesch–Kincaid grade level
@@ -28,6 +26,12 @@ func (d *Document) GunningFog() float64 {
 	x := d.NumWords / d.NumSentences
 	y := d.NumComplexWords / d.NumWords
 	return 0.4 * (x + 100.0*y)
+}
+
+// LIX computes readability measure
+// (https://en.wikipedia.org/wiki/Lix_(readability_test)) .
+func (d *Document) LIX() float64 {
+	return (d.NumWords / d.NumSentences) + ((d.NumLongWords * 100) / d.NumWords)
 }
 
 // SMOG computes the SMOG grade (https://en.wikipedia.org/wiki/SMOG).
@@ -56,8 +60,7 @@ func (d *Document) ColemanLiau() float64 {
 func (d *Document) DaleChall() float64 {
 	easy := 0.0
 	for word := range d.WordFrequency {
-		// TODO: look into more efficient lookup techniques.
-		if util.StringInSlice(word, easyWords) {
+		if _, ok := easyWords[word]; ok {
 			easy++
 		}
 	}

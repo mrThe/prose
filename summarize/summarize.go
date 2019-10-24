@@ -53,6 +53,7 @@ type Document struct {
 	NumSentences    float64        // Number of sentences
 	NumSyllables    float64        // Number of syllables
 	NumWords        float64        // Number of words
+	NumLongWords    float64        // Number of long words
 	Sentences       []Sentence     // the Document's sentences
 	WordFrequency   map[string]int // [word]frequency
 
@@ -68,6 +69,7 @@ type Assessment struct {
 	FleschKincaid        float64
 	GunningFog           float64
 	SMOG                 float64
+	LIX                  float64
 
 	// mean & standard deviation of the above estimated grade levels
 	MeanGradeLevel   float64
@@ -113,6 +115,9 @@ func (d *Document) Initialize() {
 				} else {
 					d.WordFrequency[word] = 1
 				}
+				if len(word) > 6 {
+					d.NumLongWords++
+				}
 				syllables := Syllables(word)
 				words = append(words, Word{Text: word, Syllables: syllables})
 				d.NumSyllables += float64(syllables)
@@ -139,7 +144,8 @@ func (d *Document) Assess() *Assessment {
 	a := Assessment{
 		FleschKincaid: d.FleschKincaid(), ReadingEase: d.FleschReadingEase(),
 		GunningFog: d.GunningFog(), SMOG: d.SMOG(), DaleChall: d.DaleChall(),
-		AutomatedReadability: d.AutomatedReadability(), ColemanLiau: d.ColemanLiau()}
+		AutomatedReadability: d.AutomatedReadability(), ColemanLiau: d.ColemanLiau(),
+		LIX: d.LIX()}
 
 	gradeScores := []float64{
 		a.FleschKincaid, a.AutomatedReadability, a.GunningFog, a.SMOG,
